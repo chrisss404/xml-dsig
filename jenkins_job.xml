@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+    <actions/>
+    <description></description>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <jenkins.model.BuildDiscarderProperty>
+            <strategy class="hudson.tasks.LogRotator">
+                <daysToKeep>-1</daysToKeep>
+                <numToKeep>5</numToKeep>
+                <artifactDaysToKeep>-1</artifactDaysToKeep>
+                <artifactNumToKeep>-1</artifactNumToKeep>
+            </strategy>
+        </jenkins.model.BuildDiscarderProperty>
+        <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.28"/>
+    </properties>
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.1.0">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+            <hudson.plugins.git.UserRemoteConfig>
+                <url>/home/git/xml-dsig.git</url>
+            </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+            <hudson.plugins.git.BranchSpec>
+                <name>*/master</name>
+            </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <submoduleCfg class="list"/>
+        <extensions/>
+    </scm>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers>
+        <hudson.triggers.TimerTrigger>
+            <spec>H 23 * * 3</spec>
+        </hudson.triggers.TimerTrigger>
+        <hudson.triggers.SCMTrigger>
+            <spec>H/10 * * * *</spec>
+            <ignorePostCommitHooks>false</ignorePostCommitHooks>
+        </hudson.triggers.SCMTrigger>
+    </triggers>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
+        <hudson.tasks.Shell>
+            <command>bash jenkins.sh</command>
+        </hudson.tasks.Shell>
+    </builders>
+    <publishers>
+        <hudson.plugins.disk__usage.project.DiskUsagePostBuildCalculation plugin="disk-usage@0.28"/>
+        <hudson.plugins.clover.CloverPublisher plugin="clover@4.7.1">
+            <cloverReportDir>target</cloverReportDir>
+            <cloverReportFileName>clover.xml</cloverReportFileName>
+            <healthyTarget>
+                <methodCoverage>70</methodCoverage>
+                <conditionalCoverage>80</conditionalCoverage>
+                <statementCoverage>80</statementCoverage>
+            </healthyTarget>
+            <unhealthyTarget/>
+            <failingTarget/>
+        </hudson.plugins.clover.CloverPublisher>
+        <hudson.tasks.junit.JUnitResultArchiver plugin="junit@1.20">
+            <testResults>target/surefire-reports/*.xml</testResults>
+            <keepLongStdio>false</keepLongStdio>
+            <healthScaleFactor>1.0</healthScaleFactor>
+            <allowEmptyResults>false</allowEmptyResults>
+        </hudson.tasks.junit.JUnitResultArchiver>
+        <xunit plugin="xunit@1.102">
+            <types>
+                <PHPUnitJunitHudsonTestType>
+                    <pattern>target/phpunit.xml</pattern>
+                    <skipNoTestFiles>false</skipNoTestFiles>
+                    <failIfNotNew>true</failIfNotNew>
+                    <deleteOutputFiles>true</deleteOutputFiles>
+                    <stopProcessingIfError>true</stopProcessingIfError>
+                </PHPUnitJunitHudsonTestType>
+            </types>
+            <thresholds>
+                <org.jenkinsci.plugins.xunit.threshold.FailedThreshold>
+                    <unstableThreshold></unstableThreshold>
+                    <unstableNewThreshold></unstableNewThreshold>
+                    <failureThreshold></failureThreshold>
+                    <failureNewThreshold></failureNewThreshold>
+                </org.jenkinsci.plugins.xunit.threshold.FailedThreshold>
+                <org.jenkinsci.plugins.xunit.threshold.SkippedThreshold>
+                    <unstableThreshold></unstableThreshold>
+                    <unstableNewThreshold></unstableNewThreshold>
+                    <failureThreshold></failureThreshold>
+                    <failureNewThreshold></failureNewThreshold>
+                </org.jenkinsci.plugins.xunit.threshold.SkippedThreshold>
+            </thresholds>
+            <thresholdMode>1</thresholdMode>
+            <extraConfiguration>
+                <testTimeMargin>3000</testTimeMargin>
+            </extraConfiguration>
+        </xunit>
+        <hudson.plugins.jacoco.JacocoPublisher plugin="jacoco@2.1.0">
+            <execPattern>**/**.exec</execPattern>
+            <classPattern>**/classes</classPattern>
+            <sourcePattern>**/src/main/java</sourcePattern>
+            <inclusionPattern></inclusionPattern>
+            <exclusionPattern></exclusionPattern>
+            <minimumInstructionCoverage>0</minimumInstructionCoverage>
+            <minimumBranchCoverage>0</minimumBranchCoverage>
+            <minimumComplexityCoverage>0</minimumComplexityCoverage>
+            <minimumLineCoverage>0</minimumLineCoverage>
+            <minimumMethodCoverage>0</minimumMethodCoverage>
+            <minimumClassCoverage>0</minimumClassCoverage>
+            <maximumInstructionCoverage>0</maximumInstructionCoverage>
+            <maximumBranchCoverage>0</maximumBranchCoverage>
+            <maximumComplexityCoverage>0</maximumComplexityCoverage>
+            <maximumLineCoverage>0</maximumLineCoverage>
+            <maximumMethodCoverage>0</maximumMethodCoverage>
+            <maximumClassCoverage>0</maximumClassCoverage>
+            <changeBuildStatus>false</changeBuildStatus>
+        </hudson.plugins.jacoco.JacocoPublisher>
+    </publishers>
+    <buildWrappers>
+        <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.32">
+            <deleteDirs>false</deleteDirs>
+            <cleanupParameter></cleanupParameter>
+            <externalDelete></externalDelete>
+        </hudson.plugins.ws__cleanup.PreBuildCleanup>
+    </buildWrappers>
+</project>

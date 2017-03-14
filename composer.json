@@ -1,0 +1,29 @@
+{
+  "name": "example/xml-dsig",
+    "description": "Example usage of XML digital signature",
+  "minimum-stability": "dev",
+  "license": "GPL-3.0",
+  "require": {
+    "php": ">=5.6",
+    "theseer/fdomdocument": "^1.6"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7",
+    "squizlabs/php_codesniffer": "^2.8"
+  },
+  "scripts": {
+    "test": "phpunit --log-junit target/phpunit.xml --coverage-clover target/clover.xml",
+    "lint": "phpcbf"
+  },
+  "autoload": {
+    "psr-4": {
+      "Example\\": "src/main/php",
+      "Example\\XmlDSig\\": "src/main/php/xml-dsig"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Example\\": "src/test/php"
+    }
+  }
+}
