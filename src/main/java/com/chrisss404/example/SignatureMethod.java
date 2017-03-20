@@ -21,6 +21,7 @@ package com.chrisss404.example;
  */
 public enum SignatureMethod {
 
+    RSA_SHA1("RSA", "http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
     RSA_SHA256("RSA", "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"),
     RSA_SHA512("RSA", "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512");
 
@@ -45,7 +46,7 @@ public enum SignatureMethod {
      * Finds the corresponding enum from the given values.
      *
      * @param name The name of the wanted algorithm.
-     * @param uri The URI of the wanted algorithm.
+     * @param uri  The URI of the wanted algorithm.
      * @return The corresponding method.
      */
     public static SignatureMethod fromValues(String name, String uri) {

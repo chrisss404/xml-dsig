@@ -47,7 +47,7 @@ public class XmlVerifier {
             validateSignature(docToVerify);
             return docToVerify;
         } catch (InvalidDocumentException | MarshalException | XMLSignatureException e) {
-            throw new XmlVerificationException("Signature is invalid", e);
+            throw new XmlVerificationException(String.format("Signature verification failed: %s", e.getMessage()), e);
         }
     }
 

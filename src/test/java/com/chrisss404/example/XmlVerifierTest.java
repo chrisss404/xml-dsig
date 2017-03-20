@@ -46,7 +46,7 @@ public class XmlVerifierTest extends TestCase {
             xmlVerifier.verify(new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8)));
             fail("InputStream with empty string should cause exception");
         } catch (XmlVerificationException xve) {
-            assertEquals("Invalid exception message", "Signature is invalid", xve.getMessage());
+            assertEquals("Invalid exception message", "Signature verification failed: Invalid XML input", xve.getMessage());
         }
     }
 
@@ -55,7 +55,7 @@ public class XmlVerifierTest extends TestCase {
             xmlVerifier.verify(new ByteArrayInputStream("Not a XML document".getBytes(StandardCharsets.UTF_8)));
             fail("InputStream with invalid XML should cause exception");
         } catch (XmlVerificationException xve) {
-            assertEquals("Invalid exception message", "Signature is invalid", xve.getMessage());
+            assertEquals("Invalid exception message", "Signature verification failed: Invalid XML input", xve.getMessage());
         }
     }
 
@@ -75,7 +75,7 @@ public class XmlVerifierTest extends TestCase {
             xmlVerifier.verify(xmlInputStream);
             fail("Manipulated XML should cause verification exception");
         } catch (XmlVerificationException xve) {
-            assertEquals("Invalid exception message", "Signature is invalid", xve.getMessage());
+            assertEquals("Invalid exception message", "Signature verification failed: java.security.SignatureException: Signature length not correct: got 31 but was expecting 256", xve.getMessage());
         }
     }
 
@@ -96,7 +96,7 @@ public class XmlVerifierTest extends TestCase {
             xmlVerifier.verify(xmlInputStream);
             fail("Manipulated XML should cause verification exception");
         } catch (XmlVerificationException xve) {
-            assertEquals("Invalid exception message", "Signature is invalid", xve.getMessage());
+            assertEquals("Invalid exception message", "Signature verification failed: cannot find validation key", xve.getMessage());
         }
     }
 
@@ -110,14 +110,19 @@ public class XmlVerifierTest extends TestCase {
         }
     }
 
-    public void testVerifyingXmlSignedWithUnverifiableCertificateThrowsException() throws Exception {
+    public void testVerifyingXmlSignedWithUnverifiableCertificateAndWrongXMLMessageThrowsException() throws Exception {
         try {
             InputStream xmlInputStream = getClass().getClassLoader().getResourceAsStream("signed-with-unverifiable-certificate.xml");
             xmlVerifier.verify(xmlInputStream);
             fail("Unverifiable certificate should cause verification exception");
         } catch (XmlVerificationException xve) {
-            assertEquals("Invalid exception message", "Signature is invalid", xve.getMessage());
+            assertEquals("Invalid exception message", "Signature verification failed: Invalid element name: KeyInfo, expected SignatureValue", xve.getMessage());
         }
+    }
+
+    public void testVerifyingXmlSignedWithUnverifiableCertificateSuccess() throws Exception {
+        InputStream xmlInputStream = getClass().getClassLoader().getResourceAsStream("signed-with-unverifiable-certificate-correct-xml.xml");
+        assertNotNull("XML signature is invalid", xmlVerifier.verify(xmlInputStream));
     }
 
     public void testVerifyingValidXmlSucceeds() throws Exception {
