@@ -42,19 +42,19 @@ class XmlVerifier
             return simplexml_import_dom($doc);
         } catch (DomainException $exception) {
             throw new XmlVerificationException(
-                sprintf(self::SIGNATURE_IS_INVALID_BECAUSE_OF, $exception->getMessage()),
+                sprintf(static::SIGNATURE_IS_INVALID_BECAUSE_OF, $exception->getMessage()),
                 $exception->getCode(),
                 $exception
             );
         } catch (InvalidArgumentException $exception) {
             throw new XmlVerificationException(
-                sprintf(self::SIGNATURE_IS_INVALID_BECAUSE_OF, $exception->getMessage()),
+                sprintf(static::SIGNATURE_IS_INVALID_BECAUSE_OF, $exception->getMessage()),
                 $exception->getCode(),
                 $exception
             );
         } catch (InvalidDocumentException $exception) {
             throw new XmlVerificationException(
-                sprintf(self::SIGNATURE_IS_INVALID_BECAUSE_OF, $exception->getMessage()),
+                sprintf(static::SIGNATURE_IS_INVALID_BECAUSE_OF, $exception->getMessage()),
                 $exception->getCode(),
                 $exception
             );
