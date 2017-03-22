@@ -42,7 +42,7 @@ class XmlVerifierTest extends TestCase
 
     /**
      * @expectedException \Example\XmlVerificationException
-     * @expectedExceptionMessage Signature is invalid
+     * @expectedExceptionMessage Signature is invalid: Invalid XML input
      */
     public function testVerifyingEmptyAsXmlInputThrowsException()
     {
@@ -51,7 +51,7 @@ class XmlVerifierTest extends TestCase
 
     /**
      * @expectedException \Example\XmlVerificationException
-     * @expectedExceptionMessage Signature is invalid
+     * @expectedExceptionMessage Signature is invalid: Invalid XML input
      */
     public function testVerifyingUnsupportedInputRepresentationThrowsException()
     {
@@ -90,7 +90,7 @@ class XmlVerifierTest extends TestCase
 
     /**
      * @expectedException \Example\XmlVerificationException
-     * @expectedExceptionMessage Signature is invalid
+     * @expectedExceptionMessage Signature is invalid: Unknown algorithm
      */
     public function testVerifyingXmlWithUnsupportedSignatureAlgorithmThrowsException()
     {
@@ -100,7 +100,7 @@ class XmlVerifierTest extends TestCase
 
     /**
      * @expectedException \Example\XmlVerificationException
-     * @expectedExceptionMessage Signature is invalid
+     * @expectedExceptionMessage Signature is invalid: Cannot find Signature element
      */
     public function testVerifyingNotSignedXmlThrowsException()
     {
@@ -120,7 +120,7 @@ class XmlVerifierTest extends TestCase
 
     /**
      * @expectedException \Example\XmlVerificationException
-     * @expectedExceptionMessage Signature is invalid
+     * @expectedExceptionMessage Signature is invalid: Unknown algorithm
      */
     public function testVerifyingXmlSignedWithUnrecommendedDigestAlgorithmThrowsException()
     {

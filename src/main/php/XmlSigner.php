@@ -47,7 +47,7 @@ class XmlSigner
                     "SignatureValue",
                     base64_encode($signature)
                 );
-                $signatureNode->appendChild($signatureValueNode);
+                $signatureNode->insertBefore($signatureValueNode, $keyInfoNode);
                 $doc->documentElement->appendChild($signatureNode);
             } else {
                 throw new XmlSignatureException("Failed signing XML " . openssl_error_string());

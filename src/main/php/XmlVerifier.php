@@ -40,11 +40,23 @@ class XmlVerifier
             }
             return simplexml_import_dom($doc);
         } catch (DomainException $exception) {
-            throw new XmlVerificationException(static::SIGNATURE_IS_INVALID, $exception->getCode(), $exception);
+            throw new XmlVerificationException(
+                sprintf("%s: %s", static::SIGNATURE_IS_INVALID, $exception->getMessage()),
+                $exception->getCode(),
+                $exception
+            );
         } catch (InvalidArgumentException $exception) {
-            throw new XmlVerificationException(static::SIGNATURE_IS_INVALID, $exception->getCode(), $exception);
+            throw new XmlVerificationException(
+                sprintf("%s: %s", static::SIGNATURE_IS_INVALID, $exception->getMessage()),
+                $exception->getCode(),
+                $exception
+            );
         } catch (InvalidDocumentException $exception) {
-            throw new XmlVerificationException(static::SIGNATURE_IS_INVALID, $exception->getCode(), $exception);
+            throw new XmlVerificationException(
+                sprintf("%s: %s", static::SIGNATURE_IS_INVALID, $exception->getMessage()),
+                $exception->getCode(),
+                $exception
+            );
         }
     }
 }

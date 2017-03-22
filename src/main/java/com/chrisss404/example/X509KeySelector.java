@@ -16,6 +16,9 @@
 
 package com.chrisss404.example;
 
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 import javax.xml.crypto.AlgorithmMethod;
 import javax.xml.crypto.KeySelector;
 import javax.xml.crypto.KeySelectorException;
@@ -24,7 +27,11 @@ import javax.xml.crypto.XMLCryptoContext;
 import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 import javax.xml.crypto.dsig.keyinfo.X509Data;
 import java.security.Key;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 /**
@@ -32,8 +39,13 @@ import java.security.cert.X509Certificate;
  */
 public class X509KeySelector extends KeySelector {
 
+    private final KeyStore keyStore;
+
+    public X509KeySelector(KeyStore keyStore) {
+        this.keyStore = keyStore;
+    }
+
     /**
-     *
      * @param keyInfo
      * @param purpose
      * @param method
@@ -56,6 +68,12 @@ public class X509KeySelector extends KeySelector {
                 }
 
                 PublicKey publicKey = ((X509Certificate) x509DataObject).getPublicKey();
+                try {
+                    trustCertificate(new X509Certificate[]{(X509Certificate) x509DataObject}, publicKey.getAlgorithm());
+                } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException e) {
+                    throw new KeySelectorException(e.getMessage(), e);
+                }
+
                 if (isAlgorithmSupported(publicKey.getAlgorithm(), method.getAlgorithm())) {
                     return buildKeySelectorResult(publicKey);
                 }
@@ -65,6 +83,24 @@ public class X509KeySelector extends KeySelector {
         throw new KeySelectorException("No key found!");
     }
 
+    private void trustCertificate(X509Certificate[] chain, String authType) throws CertificateException,
+            KeyStoreException, NoSuchAlgorithmException {
+
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(keyStore);
+
+        for (TrustManager tm : tmf.getTrustManagers()) {
+            if (tm instanceof X509TrustManager) {
+                X509TrustManager xtm = (X509TrustManager) tm;
+                xtm.checkServerTrusted(chain, authType);
+            }
+        }
+    }
+
+    private static boolean isAlgorithmSupported(String name, String uri) {
+        return SignatureMethod.fromValues(name, uri) != null;
+    }
+
     private static KeySelectorResult buildKeySelectorResult(final PublicKey publicKey) {
         return new KeySelectorResult() {
             @Override
@@ -72,10 +108,6 @@ public class X509KeySelector extends KeySelector {
                 return publicKey;
             }
         };
-    }
-
-    private static boolean isAlgorithmSupported(String name, String uri) {
-        return SignatureMethod.fromValues(name, uri) != null;
     }
 
 }

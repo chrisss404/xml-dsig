@@ -20,6 +20,7 @@ namespace Example\XmlDSig;
 class SignatureMethod
 {
     const ALGORITHM = "Algorithm";
+    const RSA_SHA_1 = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
     const RSA_SHA_256 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
     const RSA_SHA_512 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512";
 
@@ -60,6 +61,8 @@ class SignatureMethod
     private static function unmarshalSignatureMethod($signatureMethod)
     {
         switch ($signatureMethod) {
+            case static::RSA_SHA_1:
+                return OPENSSL_ALGO_SHA1;
             case static::RSA_SHA_256:
                 return OPENSSL_ALGO_SHA256;
             case static::RSA_SHA_512:

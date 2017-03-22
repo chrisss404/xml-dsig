@@ -116,13 +116,8 @@ public class XmlVerifierTest extends TestCase {
             xmlVerifier.verify(xmlInputStream);
             fail("Unverifiable certificate should cause verification exception");
         } catch (XmlVerificationException xve) {
-            assertEquals("Invalid exception message", "Signature verification failed: Invalid element name: KeyInfo, expected SignatureValue", xve.getMessage());
+            assertEquals("Invalid exception message", "Signature verification failed: cannot find validation key", xve.getMessage());
         }
-    }
-
-    public void testVerifyingXmlSignedWithUnverifiableCertificateSuccess() throws Exception {
-        InputStream xmlInputStream = getClass().getClassLoader().getResourceAsStream("signed-with-unverifiable-certificate-correct-xml.xml");
-        assertNotNull("XML signature is invalid", xmlVerifier.verify(xmlInputStream));
     }
 
     public void testVerifyingValidXmlSucceeds() throws Exception {
