@@ -24,6 +24,7 @@ use InvalidArgumentException;
 class XmlVerifier
 {
     const SIGNATURE_IS_INVALID = "Signature is invalid";
+    const SIGNATURE_IS_INVALID_BECAUSE_OF = "Signature is invalid: %s";
 
     /**
      * @param $xmlString string
@@ -33,27 +34,27 @@ class XmlVerifier
     {
         try {
             $doc = Utility::loadXmlDocument($xmlString);
-            $domValidateContext = new ValidateContext($doc, new X509KeySelector());
+            $validateContext = new ValidateContext($doc, new X509KeySelector());
 
-            if (!$domValidateContext->isValid()) {
+            if (!$validateContext->isValid()) {
                 throw new XmlVerificationException(static::SIGNATURE_IS_INVALID);
             }
             return simplexml_import_dom($doc);
         } catch (DomainException $exception) {
             throw new XmlVerificationException(
-                sprintf("%s: %s", static::SIGNATURE_IS_INVALID, $exception->getMessage()),
+                sprintf(self::SIGNATURE_IS_INVALID_BECAUSE_OF, $exception->getMessage()),
                 $exception->getCode(),
                 $exception
             );
         } catch (InvalidArgumentException $exception) {
             throw new XmlVerificationException(
-                sprintf("%s: %s", static::SIGNATURE_IS_INVALID, $exception->getMessage()),
+                sprintf(self::SIGNATURE_IS_INVALID_BECAUSE_OF, $exception->getMessage()),
                 $exception->getCode(),
                 $exception
             );
         } catch (InvalidDocumentException $exception) {
             throw new XmlVerificationException(
-                sprintf("%s: %s", static::SIGNATURE_IS_INVALID, $exception->getMessage()),
+                sprintf(self::SIGNATURE_IS_INVALID_BECAUSE_OF, $exception->getMessage()),
                 $exception->getCode(),
                 $exception
             );

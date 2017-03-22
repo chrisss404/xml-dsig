@@ -41,6 +41,11 @@ public class X509KeySelector extends KeySelector {
 
     private final KeyStore keyStore;
 
+    /**
+     * Constructs a X509KeySelector with all required dependencies.
+     *
+     * @param keyStore The keystore holds the trusted certificates.
+     */
     public X509KeySelector(KeyStore keyStore) {
         this.keyStore = keyStore;
     }
