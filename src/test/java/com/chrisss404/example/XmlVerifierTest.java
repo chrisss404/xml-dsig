@@ -110,7 +110,7 @@ public class XmlVerifierTest extends TestCase {
         }
     }
 
-    public void testVerifyingXmlSignedWithUnverifiableCertificateAndWrongXMLMessageThrowsException() throws Exception {
+    public void testVerifyingXmlSignedWithUnverifiableCertificateThrowsException() throws Exception {
         try {
             InputStream xmlInputStream = getClass().getClassLoader().getResourceAsStream("signed-with-unverifiable-certificate.xml");
             xmlVerifier.verify(xmlInputStream);

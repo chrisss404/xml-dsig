@@ -51,17 +51,18 @@ public class X509KeySelector extends KeySelector {
     }
 
     /**
-     * @param keyInfo
-     * @param purpose
-     * @param method
-     * @param context
-     * @return
-     * @throws KeySelectorException
+     * Finds the key from the KeyInfo element, and validates it.
+     *
+     * @param keyInfo The KeyInfo element.
+     * @param purpose The purpose of the key (sign, verify, encrypt, or decrypt)
+     * @param method The used signature method.
+     * @param context The crypto context.
+     * @return The fitting key.
+     * @throws KeySelectorException in case of an error.
      */
     @Override
     public KeySelectorResult select(KeyInfo keyInfo, KeySelector.Purpose purpose, AlgorithmMethod method,
                                     XMLCryptoContext context) throws KeySelectorException {
-
         for (Object keyInfoObject : keyInfo.getContent()) {
             if (!(keyInfoObject instanceof X509Data)) {
                 continue;
@@ -74,7 +75,7 @@ public class X509KeySelector extends KeySelector {
 
                 PublicKey publicKey = ((X509Certificate) x509DataObject).getPublicKey();
                 try {
-                    trustCertificate(new X509Certificate[]{(X509Certificate) x509DataObject}, publicKey.getAlgorithm());
+                    validateCertificate(new X509Certificate[]{(X509Certificate) x509DataObject}, publicKey.getAlgorithm());
                 } catch (CertificateException | KeyStoreException | NoSuchAlgorithmException e) {
                     throw new KeySelectorException(e.getMessage(), e);
                 }
@@ -88,7 +89,7 @@ public class X509KeySelector extends KeySelector {
         throw new KeySelectorException("No key found!");
     }
 
-    private void trustCertificate(X509Certificate[] chain, String authType) throws CertificateException,
+    private void validateCertificate(X509Certificate[] chain, String authType) throws CertificateException,
             KeyStoreException, NoSuchAlgorithmException {
 
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
