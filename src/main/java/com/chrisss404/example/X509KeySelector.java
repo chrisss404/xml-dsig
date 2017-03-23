@@ -55,7 +55,7 @@ public class X509KeySelector extends KeySelector {
      *
      * @param keyInfo The KeyInfo element.
      * @param purpose The purpose of the key (sign, verify, encrypt, or decrypt)
-     * @param method The used signature method.
+     * @param method  The used signature method.
      * @param context The crypto context.
      * @return The fitting key.
      * @throws KeySelectorException in case of an error.

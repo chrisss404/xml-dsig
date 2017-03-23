@@ -34,9 +34,13 @@ public class XmlSignerTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        privateKey = TestUtility.loadPrivateKeyFromKeyStore("certs/keystore.jks", "demo", "abc123");
+
+        final String secret = "abc123";
+        KeyStore ks = TestUtility.loadKeyStore("certs/keystore.jks", secret);
+
+        privateKey = TestUtility.loadPrivateKeyFromKeyStore(ks, "demo", secret);
         xmlSigner = new XmlSigner();
-        xmlVerifier = new XmlVerifier();
+        xmlVerifier = new XmlVerifier(ks);
     }
 
     public void testSignInvalidXmlThrowsException() throws Exception {

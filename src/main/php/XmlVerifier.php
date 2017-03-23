@@ -26,6 +26,17 @@ class XmlVerifier
     const SIGNATURE_IS_INVALID = "Signature is invalid";
     const SIGNATURE_IS_INVALID_BECAUSE_OF = "Signature is invalid: %s";
 
+    private $trustedCAs;
+
+    /**
+     * XmlVerifier constructor.
+     * @param $trustedCAs array
+     */
+    public function __construct($trustedCAs)
+    {
+        $this->trustedCAs = $trustedCAs;
+    }
+
     /**
      * @param $xmlString string
      * @return \SimpleXMLElement
@@ -34,7 +45,7 @@ class XmlVerifier
     {
         try {
             $doc = Utility::loadXmlDocument($xmlString);
-            $validateContext = new ValidateContext($doc, new X509KeySelector());
+            $validateContext = new ValidateContext($doc, new X509KeySelector($this->trustedCAs));
 
             if (!$validateContext->isValid()) {
                 throw new XmlVerificationException(static::SIGNATURE_IS_INVALID);

@@ -28,7 +28,7 @@ class XmlVerifierTest extends TestCase
 
     protected function setUp()
     {
-        $this->verifier = new XmlVerifier();
+        $this->verifier = new XmlVerifier(array("src/test/resources/certs/ca.pem"));
     }
 
     /**

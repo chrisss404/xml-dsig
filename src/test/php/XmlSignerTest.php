@@ -36,7 +36,7 @@ class XmlSignerTest extends TestCase
     protected function setUp()
     {
         $this->signer = new XmlSigner();
-        $this->verifier = new XmlVerifier();
+        $this->verifier = new XmlVerifier(array("src/test/resources/certs/ca.pem"));
         $this->certificateAndPrivateKey = file_get_contents("src/test/resources/certs/signing-certificate.pem");
     }
 

@@ -40,6 +40,17 @@ public class XmlVerifier {
 
     private static XMLSignatureFactory sf = XMLSignatureFactory.getInstance("DOM");
 
+    private final KeyStore keyStore;
+
+    /**
+     * Constructs a XmlVerifier instance with all its dependencies.
+     *
+     * @param keyStore The keystore holds the trusted certificates.
+     */
+    public XmlVerifier(KeyStore keyStore) {
+        this.keyStore = keyStore;
+    }
+
     /**
      * Verifies that a given XML document is valid.
      *
@@ -49,7 +60,7 @@ public class XmlVerifier {
     public Document verify(InputStream xmlToVerify) {
         try {
             Document docToVerify = Utility.loadXmlDocument(xmlToVerify);
-            validateSignature(docToVerify);
+            validateSignature(docToVerify, keyStore);
             return docToVerify;
         } catch (CertificateException | InvalidDocumentException | IOException | KeyStoreException | MarshalException |
                 NoSuchAlgorithmException | XMLSignatureException e) {
@@ -57,14 +68,13 @@ public class XmlVerifier {
         }
     }
 
-    private static void validateSignature(Document doc) throws XMLSignatureException, MarshalException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    private static void validateSignature(Document doc, KeyStore keyStore) throws XMLSignatureException, MarshalException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
         NodeList nl = doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
         if (nl.getLength() == 0) {
             throw new XmlVerificationException("Cannot find Signature element");
         }
 
-        KeyStore ks = loadKeyStore("certs/keystore.jks", "abc123");
-        DOMValidateContext dvc = new DOMValidateContext(new X509KeySelector(ks), nl.item(0));
+        DOMValidateContext dvc = new DOMValidateContext(new X509KeySelector(keyStore), nl.item(0));
         XMLSignature signature = sf.unmarshalXMLSignature(dvc);
 
         if (!signature.validate(dvc)) {
@@ -80,14 +90,6 @@ public class XmlVerifier {
             }
             throw new XmlVerificationException(sb.toString());
         }
-    }
-
-    private static KeyStore loadKeyStore(String keyStorePath, String password) throws KeyStoreException,
-            CertificateException, NoSuchAlgorithmException, IOException {
-        InputStream is = X509KeySelector.class.getClassLoader().getResourceAsStream(keyStorePath);
-        KeyStore ks = KeyStore.getInstance("JKS");
-        ks.load(is, password.toCharArray());
-        return ks;
     }
 
 }

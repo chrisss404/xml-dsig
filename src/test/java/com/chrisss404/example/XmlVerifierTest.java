@@ -29,7 +29,7 @@ public class XmlVerifierTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        xmlVerifier = new XmlVerifier();
+        xmlVerifier = new XmlVerifier(TestUtility.loadKeyStore("certs/keystore.jks", "abc123"));
     }
 
     public void testVerifyingNullAsXmlInputThrowsException() throws Exception {

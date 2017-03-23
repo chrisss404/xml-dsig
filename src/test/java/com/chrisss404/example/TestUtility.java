@@ -37,11 +37,15 @@ import java.security.cert.CertificateException;
 
 public class TestUtility {
 
-    public static KeyStore.PrivateKeyEntry loadPrivateKeyFromKeyStore(String keyStore, String alias, String password) throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException, KeyStoreException {
+    public static KeyStore loadKeyStore(String keyStore, String password) throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException {
         InputStream is = TestUtility.class.getClassLoader().getResourceAsStream(keyStore);
         KeyStore ks = KeyStore.getInstance("JKS");
         ks.load(is, password.toCharArray());
-        return (KeyStore.PrivateKeyEntry) ks.getEntry(alias, new KeyStore.PasswordProtection(password.toCharArray()));
+        return ks;
+    }
+
+    public static KeyStore.PrivateKeyEntry loadPrivateKeyFromKeyStore(KeyStore keyStore, String alias, String password) throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException, KeyStoreException {
+        return (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(password.toCharArray()));
     }
 
     public static void saveDocumentToFile(Document doc, String filename) throws IOException, TransformerException {

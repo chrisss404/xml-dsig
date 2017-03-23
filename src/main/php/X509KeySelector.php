@@ -22,6 +22,18 @@ use Example\XmlDSig\Signature;
 
 class X509KeySelector implements KeySelector
 {
+
+    private $trustedCAs;
+
+    /**
+     * X509KeySelector constructor.
+     * @param $trustedCAs array
+     */
+    public function __construct($trustedCAs)
+    {
+        $this->trustedCAs = $trustedCAs;
+    }
+
     /**
      * @param $keyInfo \DOMNodeList
      * @return string
@@ -43,8 +55,7 @@ class X509KeySelector implements KeySelector
      */
     private function validateCertificate($cert)
     {
-        $trustedCAs = array("src/test/resources/certs/ca.pem");
-        if (!openssl_x509_checkpurpose($cert, X509_PURPOSE_SMIME_SIGN, $trustedCAs)) {
+        if (!openssl_x509_checkpurpose($cert, X509_PURPOSE_SMIME_SIGN, $this->trustedCAs)) {
             throw new XmlVerificationException("Invalid certificate");
         }
         return $cert;
